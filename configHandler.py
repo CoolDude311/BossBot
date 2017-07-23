@@ -53,7 +53,6 @@ def readApiKeys():
     keys = checkConfig()
     splitKeys = []
     for key in keys:
-        splitKeys.append(key.split(':')[1])
+        keyToAppend = key.split(':')[1]
+        splitKeys.append(keyToAppend[:(len(keyToAppend) - 1)])
     return splitKeys
-
-readApiKeys()

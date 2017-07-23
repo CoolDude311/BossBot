@@ -38,10 +38,12 @@ async def dice(context):
 def init():
     '''Imports the configuration from "./config/main.conf" and starts the bot'''
     apiKeys = configHandler.readApiKeys()
-    print(apiKeys[0])
+    print(apiKeys)
+    print('Discord API Key: %s' %apiKeys[0])
     bot.run(str(apiKeys[0])) #login to Discord using a Bot API in place of token
 
-init()
+if __name__ == '__main__':
+    init()
 
 '''
 Research used:

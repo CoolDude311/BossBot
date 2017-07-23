@@ -5,7 +5,7 @@ import stat
 import sys
 
 def checkConfig():
-    '''Checks to see if config directory exists, and if the user has necesary permissions to read and write to the files. If the user does not have permission, it exits with an error message. If the files do not exist, it will automatically set them up.'''
+    '''Checks to see if config directory exists, and if the user has necesary permissions to read and write to the files. If the user does not have permission, it exits with an error message. If the files do not exist, it will automatically set them up. If possible, returns openConfig()'''
     if os.path.exists('./config/main.conf') and stat.filemode(os.stat('./config/main.conf')[0])[:3] == '-rw':
         return openConfig()
     elif os.path.exists('./config/main.conf'):
@@ -15,6 +15,7 @@ def checkConfig():
 
 def openConfig():
     '''Opens the existing "./config/main.conf" file in the root directory, and returns a list containing its lines.'''
+    #TODO: Check to make sure main.conf is valid
     inFilePipe = open('./config/main.conf', 'r')
     output = inFilePipe.readlines()
     inFilePipe.close()
@@ -26,7 +27,7 @@ def makeConfig():
     os.mkdir('./config')
     outFilePipe = open('./config/main.conf', 'w')
     apiKey = input('Hi! Seems like this is your first time running me. Let\'s go ahead and set up your API keys. Go ahead and enter your Discord API key: ')
-    outFilePipe.write('Discord API Key:\t%s\n' %apiKey)
+    outFilePipe.write('Discord API Key:%s\n' %apiKey)
     outFilePipe.close()
 
 def makeServerDir():
@@ -47,5 +48,12 @@ Creates a new configuration file for serverID after checking to make sure it doe
         outFilePipe.write('Server ID:\t%s\n' %serverID)
         outFilePipe.close()
 
-checkConfig()
-createServerConfig('asdf')
+def readApiKeys():
+    '''Reads the API keys in main.conf, and returns a list of the keys only and not their designation.'''
+    keys = checkConfig()
+    splitKeys = []
+    for key in keys:
+        splitKeys.append(key.split(':')[1])
+    return splitKeys
+
+readApiKeys()

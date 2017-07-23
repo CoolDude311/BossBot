@@ -23,12 +23,17 @@ def openConfig():
     return output
 
 def makeConfig():
-    '''Creates the config directory "./config" in the root directory, and creates configuration files.'''
-    os.mkdir('./config')
-    outFilePipe = open('./config/main.conf', 'w')
-    apiKey = input('Hi! Seems like this is your first time running me. Let\'s go ahead and set up your API keys. Go ahead and enter your Discord API key: ')
-    outFilePipe.write('Discord API Key:%s\n' %apiKey)
-    outFilePipe.close()
+    '''Creates the config directory "./config" in the root directory, and creates configuration files. If the config directory already exists, nothing happens.'''
+    if os.path.exists('./config'):
+        print('A config directory already exists at ./config .')
+    else:
+        os.mkdir('./config')
+        outFilePipe = open('./config/main.conf', 'w')
+        apiKey = input('Hi! Seems like this is your first time running me. Let\'s go ahead and set up your API keys. Go ahead and enter your Discord API key: ')
+        outFilePipe.write('Discord API Key:%s\n' %apiKey)
+        outFilePipe.close()
+        print('API key was written')
+        checkConfig()
 
 def makeServerDir():
     '''Creates the directory to store configurations for individual servers after checking to make sure it does not already exist.'''
@@ -56,3 +61,8 @@ def readApiKeys():
         keyToAppend = key.split(':')[1]
         splitKeys.append(keyToAppend[:(len(keyToAppend) - 1)])
     return splitKeys
+
+'''
+if __name__ == '__main__':
+    readApiKeys()
+'''

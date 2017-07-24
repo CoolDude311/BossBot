@@ -50,7 +50,7 @@ Creates a new configuration file for serverID after checking to make sure it doe
     else:
         makeServerDir()
         outFilePipe = open('./config/servers/%s.conf' %serverID, 'w')
-        outFilePipe.write('Server ID:\t%s\n' %serverID)
+        outFilePipe.write('Server ID:%s\n' %serverID)
         outFilePipe.close()
 
 def readApiKeys():

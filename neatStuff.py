@@ -18,7 +18,3 @@ def deathclock():
         return 'Congratulations, only %d more years to go of this disgusting nightmare for you.' %years
     elif years <= 10:
         return 'Aww hell yeah, you only have %d more years to go buddy. It\'s almost over!' %years
-
-'''Discord text formatting options:
-
-'''

@@ -35,6 +35,11 @@ async def dice(context):
     '''respond to "dice" with a roll of the dice from neatStuff.rollDice()'''
     await bot.say('You rolled a %d' %neatStuff.rollDice(6))
 
+@bot.command(pass_context=True)
+async def death(context):
+    '''respond to "death" with an appropriate message telling the user when they will die'''
+    await bot.say(neatStuff.deathclock())
+
 def init():
     '''Imports the configuration from "./config/main.conf" and starts the bot'''
     configHandler.makeConfig()

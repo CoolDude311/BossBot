@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 '''This module contains functions to be used as responses in main.py'''
+import os
 import random
 
 def rollDice(dieSides=6):
@@ -18,3 +19,7 @@ def deathclock():
         return 'Congratulations, only %d more years to go of this disgusting nightmare for you.' %years
     elif years <= 10:
         return 'Aww hell yeah, you only have %d more years to go buddy. It\'s almost over!' %years
+
+def sendMeme():
+    '''Check to make sure meme directory exists, and create it if it doesn't. If it does exist, randomly select one and return its path.'''
+    return None

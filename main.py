@@ -35,7 +35,7 @@ async def sergals(context):
 @bot.command(pass_context=True)
 async def dice(context):
     '''respond to "dice" with a roll of the dice from neatStuff.rollDice()'''
-    await bot.send_message(context.message.channel, 'You rolled a %d' %neatStuff.rollDice(6))
+    await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.name, neatStuff.rollDice(6)))
 
 @bot.command(pass_context=True)
 async def death(context):
@@ -46,6 +46,12 @@ async def death(context):
 async def icon(context):
     '''When no arguments are given, return the bot's icon. When a valid user is given, return the user's icon.'''
     await bot.say(str(discord.AppInfo.icon_url))
+
+@bot.command(pass_context=True)
+async def invite(context):
+    '''pm the user an invite'''
+    await bot.send_message(context.message.channel, 'PMing %s an invite link...' %context.message.author.name)
+    await bot.send_message(context.message.author, discord.utils.oauth_url(bot.user.id))
 
 def init():
     '''Imports the configuration from "./config/main.conf" and starts the bot'''

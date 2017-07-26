@@ -13,13 +13,23 @@ bot_prefix = '$' #this is the prefix to be used in a Discord channel to get the 
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
+async def memeHandler(context):
+    '''performs the appropriate action based on what neatStuff.sendMeme() returns'''
+    meme = neatStuff.sendMeme()
+    if meme[:2] == './':
+        print('sending meme %s' %meme)
+        await bot.send_file(context.message.channel, meme)
+        print('%s was successfully uploaded')
+    else:
+        await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some!')
+
 @bot.event
 async def on_ready():
     '''prints Discord login information and version info to console when the bot has logged in'''
     print('\n==INITIALIZATION COMPLETE==')
     print('BossBot is logged in, reporting for duty!')
     print('Username: %s' %bot.user.name)
-    print('ID: %s' %str(bot.user.name))
+    print('ID: %s' %str(bot.user.id))
     print('Running on Discord.py ' + discord.__version__)
 
 @bot.command(pass_context=True) #passes context from command
@@ -35,12 +45,17 @@ async def sergals(context):
 @bot.command(pass_context=True)
 async def dice(context):
     '''respond to "dice" with a roll of the dice from neatStuff.rollDice()'''
-    await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.name, neatStuff.rollDice(6)))
+    await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.name, neatStuff.rollDice()))
 
 @bot.command(pass_context=True)
 async def death(context):
     '''respond to "death" with an appropriate message telling the user when they will die'''
     await bot.send_message(context.message.channel, neatStuff.deathclock())
+
+@bot.command(pass_context=True)
+async def meme(context):
+    '''sends a meme to the channel'''
+    await memeHandler(context)
 
 @bot.command(pass_context=True)
 async def icon(context):

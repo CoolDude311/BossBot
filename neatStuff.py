@@ -22,4 +22,15 @@ def deathclock():
 
 def sendMeme():
     '''Check to make sure meme directory exists, and create it if it doesn't. If it does exist, randomly select one and return its path.'''
-    return None
+    if os.path.exists('./memes') and len(os.listdir('./memes')) != 0:
+        files = os.listdir('./memes')
+        return './memes/' + files[random.randint(0, len(files) - 1)]
+    elif os.path.exists('./memes'):
+        print('sendMeme() was called, but no memes are in ./memes')
+    else:
+        os.mkdir('./memes')
+        print('memes directory does not exist, creating...')
+        sendMeme()
+
+if __name__ == '__main__':
+    print(sendMeme())

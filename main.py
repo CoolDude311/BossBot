@@ -19,7 +19,7 @@ async def memeHandler(context):
     if meme[:2] == './':
         print('sending meme %s' %meme)
         await bot.send_file(context.message.channel, meme)
-        print('%s was successfully uploaded')
+        print('%s was successfully uploaded' %meme)
     elif meme == 'no memes':
         await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some!')
     else:
@@ -42,7 +42,7 @@ async def ping(context):
 @bot.command(pass_context=True)
 async def sergals(context):
     '''get an interesting sergal fact'''
-    await bot.send_message(context.message.channel, 'are excessively floofy')
+    await bot.send_message(context.message.channel, neatStuff.sendSergalFact())
 
 @bot.command(pass_context=True)
 async def dice(context):

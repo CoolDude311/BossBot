@@ -3,6 +3,8 @@
 import os
 import random
 
+sergalFacts = ['Sergals are excessively floofy.', 'Sergals are made of cheese.', 'Sergals originally came from the moon, because, like the moon, they are made of cheese.']
+
 def rollDice(dieSides=6):
     '''Preconditions: an integer (dieSides). Default is 6.
     Postconditions: returns an integer between 1 and dieSides.'''
@@ -20,8 +22,12 @@ def deathclock():
     elif years <= 10:
         return 'Aww hell yeah, you only have %d more years to go buddy. It\'s almost over!' %years
 
+def sendSergalFact():
+    '''Returns a random sergal fact.'''
+    return sergalFacts[random.randint(0, len(sergalFacts) - 1)]
+
 def sendMeme():
-    '''Check to make sure meme directory exists, and create it if it doesn't. If it does exist, randomly select one and return its path.'''
+    '''Check to make sure meme directory exists, and create it if it doesn't. If it does exist but no images are in it, send the appropriate message. If images are present, return the path of a randomly selected one.'''
     if os.path.exists('./memes') and len(os.listdir('./memes')) != 0:
         files = os.listdir('./memes')
         return './memes/' + files[random.randint(0, len(files) - 1)]

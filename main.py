@@ -8,8 +8,8 @@ import neatStuff
 import discord
 from discord.ext import commands
 
-description = 'This is a Discord bot I have written to prove my Python capabilities to my instructors. Research used during the construction of this bot can be found at the end of "main.py" in the project. The name "BossBot" comes from a character in Metal Gear Solid.'
 bot_prefix = '$' #this is the prefix to be used in a Discord channel to get the bot's attention
+description = 'Hello! I can do many things, like the stuff below. Get my attention with %s' %bot_prefix
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
@@ -36,22 +36,22 @@ async def on_ready():
 
 @bot.command(pass_context=True) #passes context from command
 async def ping(context):
-    '''respond to "ping" with "Pong!"'''
+    '''play pong'''
     await bot.send_message(context.message.channel, 'Pong!')
 
 @bot.command(pass_context=True)
 async def sergals(context):
-    '''respond to "sergals" with "are excessively floofy"'''
+    '''get an interesting sergal fact'''
     await bot.send_message(context.message.channel, 'are excessively floofy')
 
 @bot.command(pass_context=True)
 async def dice(context):
-    '''respond to "dice" with a roll of the dice from neatStuff.rollDice()'''
+    '''roll a dice'''
     await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.mention, neatStuff.rollDice()))
 
 @bot.command(pass_context=True)
 async def death(context):
-    '''respond to "death" with an appropriate message telling the user when they will die'''
+    '''find out when you will die'''
     await bot.send_message(context.message.channel, neatStuff.deathclock())
 
 @bot.command(pass_context=True)
@@ -66,7 +66,7 @@ async def icon(context):
 
 @bot.command(pass_context=True)
 async def invite(context):
-    '''pm the user an invite'''
+    '''use this to receive a link to add me to your server'''
     await bot.send_message(context.message.channel, 'PMing %s an invite link...' %context.message.author.mention)
     await bot.send_message(context.message.author, discord.utils.oauth_url(bot.user.id))
 

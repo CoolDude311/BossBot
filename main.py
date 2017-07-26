@@ -25,6 +25,15 @@ async def memeHandler(context):
     else:
         print('An error occured when trying to send a meme.')
 
+async def getIcon(context):
+    '''send the avatar urls of the mentioned users in a message, to be used with icon command
+    Preconditions: context, which is the context the message is sent with'''
+    if len(context.message.mentions) == 0:
+        await bot.send_message(context.message.channel, 'Make sure to mention a user(s) after using this command!')
+    else:
+        for member in context.message.mentions:
+            await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
+
 @bot.event
 async def on_ready():
     '''prints Discord login information and version info to console when the bot has logged in'''
@@ -62,7 +71,7 @@ async def meme(context):
 @bot.command(pass_context=True)
 async def icon(context):
     '''When no arguments are given, return the bot's icon. When a valid user is given, return the user's icon.'''
-    await bot.say(str(discord.AppInfo.icon_url))
+    await getIcon(context)
 
 @bot.command(pass_context=True)
 async def invite(context):

@@ -20,8 +20,10 @@ async def memeHandler(context):
         print('sending meme %s' %meme)
         await bot.send_file(context.message.channel, meme)
         print('%s was successfully uploaded')
-    else:
+    elif meme == 'no memes':
         await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some!')
+    else:
+        print('An error occured when trying to send a meme.')
 
 @bot.event
 async def on_ready():
@@ -45,7 +47,7 @@ async def sergals(context):
 @bot.command(pass_context=True)
 async def dice(context):
     '''respond to "dice" with a roll of the dice from neatStuff.rollDice()'''
-    await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.name, neatStuff.rollDice()))
+    await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.mention, neatStuff.rollDice()))
 
 @bot.command(pass_context=True)
 async def death(context):
@@ -65,7 +67,7 @@ async def icon(context):
 @bot.command(pass_context=True)
 async def invite(context):
     '''pm the user an invite'''
-    await bot.send_message(context.message.channel, 'PMing %s an invite link...' %context.message.author.name)
+    await bot.send_message(context.message.channel, 'PMing %s an invite link...' %context.message.author.mention)
     await bot.send_message(context.message.author, discord.utils.oauth_url(bot.user.id))
 
 def init():

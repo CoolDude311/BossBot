@@ -27,10 +27,11 @@ def sendMeme():
         return './memes/' + files[random.randint(0, len(files) - 1)]
     elif os.path.exists('./memes'):
         print('sendMeme() was called, but no memes are in ./memes')
+        return 'no memes'
     else:
         os.mkdir('./memes')
         print('memes directory does not exist, creating...')
-        sendMeme()
+        return sendMeme()
 
 if __name__ == '__main__':
     print(sendMeme())

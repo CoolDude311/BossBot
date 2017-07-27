@@ -27,8 +27,12 @@ async def memeHandler(context):
 
 async def downloadMeme(context):
     '''saves the attachments in an attachment list'''
-    for x in context.message.attachments:
-        print(x)
+    URLs = []
+    filenames = []
+    for attachment in context.message.attachments:
+        URLs.append(attachment['url'])
+        filenames.append(attachment['filename'])
+    neatStuff.downloadMeme(URLs, filenames)
 
 async def getIcon(context):
     '''send the avatar urls of the mentioned users in a message, to be used with icon command
@@ -114,4 +118,5 @@ Research used:
     Discord bot beginning tutorial (used for learning how to initially set up the bot, and what additional skills would need to be gained before the bot could be written: https://youtu.be/bYfhQODnH0g
     Discord.py Documentation: https://discordpy.readthedocs.io/en/latest/api.html#client
     Video on Python Decorators: https://youtu.be/mZ5IwFfqvz8
+    Stackoverflow questions on how to spoof a User-Agent with urllib to get around Discord's refusal to serve bots: https://stackoverflow.com/questions/24226781/changing-user-agent-in-python-3-for-urrlib-request-urlopen, https://stackoverflow.com/questions/8286352/how-to-save-an-image-locally-using-python-whose-url-address-i-already-know
 '''

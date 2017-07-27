@@ -2,6 +2,7 @@
 '''This module contains functions to be used as responses in main.py'''
 import os
 import random
+import urllib.request
 
 sergalFacts = ['Sergals are excessively floofy.', 'Sergals are made of cheese.', 'Sergals originally came from the moon, because, like the moon, they are made of cheese.', 'Sergals are actually just floofy land sharks.', 'Sergals are börk sharks.']
 
@@ -26,6 +27,14 @@ def sendSergalFact():
     '''Returns a random sergal fact.'''
     return sergalFacts[random.randint(0, len(sergalFacts) - 1)]
 
+def checkIfMemeDirExists():
+    '''checks if ./memes exists. If it does, tacit returns. If it doesn't, it creates the directory'''
+    if os.path.exists('./memes'):
+        return
+    else:
+        os.mkdir('./memes')
+        print('memes directory does not exist, creating...')
+
 def sendMeme():
     '''Check to make sure meme directory exists, and create it if it doesn't. If it does exist but no images are in it, send the appropriate message. If images are present, return the path of a randomly selected one.'''
     if os.path.exists('./memes') and len(os.listdir('./memes')) != 0:
@@ -35,9 +44,23 @@ def sendMeme():
         print('sendMeme() was called, but no memes are in ./memes')
         return 'no memes'
     else:
-        os.mkdir('./memes')
-        print('memes directory does not exist, creating...')
+        checkIfMemeDirExists()
         return sendMeme()
+
+def downloadMeme(URLs, filenames):
+    '''checks to make sure the meme directory exists, and if it doesn't, creates the directory. If it does exist, downloads the images in URLs.
+    Preconditions: URLs, a list containing valid URLs with images.
+    filenames, a list containing filenames to match with the URLS.'''
+    checkIfMemeDirExists()
+    for url in URLs:
+        print('URL: %s\nfilename: %s' %(url, filenames[URLs.index(url)]))
+        request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})        
+        openedRequest = urllib.request.urlopen(request)
+        print('Downloading image %s...' %filenames[URLs.index(url)])
+        image = open('./memes/%s' %filenames[URLs.index(url)], 'wb')
+        image.write(openedRequest.read())
+        image.close()
+        print('%s downloaded and saved to ./memes' %filenames[URLs.index(url)])
 
 def fullwidth(text):
     '''converts a regular string to Unicode Fullwidth
@@ -47,4 +70,4 @@ def fullwidth(text):
     return text.translate(translator)
 
 if __name__ == '__main__':
-    print(fullwidth('asdf'))
+    downloadMeme(['https://cdn.discordapp.com/attachments/339179772007415808/340177774411120643/LAFF.png'], ['logo.png'])

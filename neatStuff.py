@@ -3,7 +3,7 @@
 import os
 import random
 
-sergalFacts = ['Sergals are excessively floofy.', 'Sergals are made of cheese.', 'Sergals originally came from the moon, because, like the moon, they are made of cheese.']
+sergalFacts = ['Sergals are excessively floofy.', 'Sergals are made of cheese.', 'Sergals originally came from the moon, because, like the moon, they are made of cheese.', 'Sergals are actually just floofy land sharks.', 'Sergals are börk sharks.']
 
 def rollDice(dieSides=6):
     '''Preconditions: an integer (dieSides). Default is 6.
@@ -39,5 +39,12 @@ def sendMeme():
         print('memes directory does not exist, creating...')
         return sendMeme()
 
+def fullwidth(text):
+    '''converts a regular string to Unicode Fullwidth
+    Preconditions: text, a string'''
+    translator = ''
+    translator = translator.maketrans('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~' , '０１２３４５６７８９ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～')
+    return text.translate(translator)
+
 if __name__ == '__main__':
-    print(sendMeme())
+    print(fullwidth('asdf'))

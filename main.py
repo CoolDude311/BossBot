@@ -74,6 +74,16 @@ async def icon(context):
     await getIcon(context)
 
 @bot.command(pass_context=True)
+async def fullwidth(context):
+    '''convert your message into Unicode Fullwidth'''
+    await bot.send_message(context.message.channel, neatStuff.fullwidth(context.message.content[11:]))
+
+@bot.command(pass_context=True)
+async def source(context):
+    '''get a link to my GitHub repo'''
+    await bot.send_message(context.message.channel, 'https://github.com/CoolDude311/BossBot')
+
+@bot.command(pass_context=True)
 async def invite(context):
     '''use this to receive a link to add me to your server'''
     await bot.send_message(context.message.channel, 'PMing %s an invite link...' %context.message.author.mention)

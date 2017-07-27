@@ -25,6 +25,11 @@ async def memeHandler(context):
     else:
         print('An error occured when trying to send a meme.')
 
+async def downloadMeme(context):
+    '''saves the attachments in an attachment list'''
+    for x in context.message.attachments:
+        print(x)
+
 async def getIcon(context):
     '''send the avatar urls of the mentioned users in a message, to be used with icon command
     Preconditions: context, which is the context the message is sent with'''
@@ -67,6 +72,11 @@ async def death(context):
 async def meme(context):
     '''sends a meme to the channel'''
     await memeHandler(context)
+
+@bot.command(pass_context=True)
+async def uploadMeme(context):
+    '''upload a meme for me to add to the meme command'''
+    await downloadMeme(context)
 
 @bot.command(pass_context=True)
 async def icon(context):

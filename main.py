@@ -21,7 +21,7 @@ async def memeHandler(context):
         await bot.send_file(context.message.channel, meme)
         print('%s was successfully uploaded' %meme)
     elif meme == 'no memes':
-        await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some!')
+        await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some with %suploadMeme!' %bot_prefix)
     else:
         print('An error occured when trying to send a meme.')
 
@@ -32,6 +32,7 @@ async def downloadMeme(context):
     for attachment in context.message.attachments:
         URLs.append(attachment['url'])
         filenames.append(attachment['filename'])
+        await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
     neatStuff.downloadMeme(URLs, filenames)
 
 async def getIcon(context):
@@ -42,6 +43,15 @@ async def getIcon(context):
     else:
         for member in context.message.mentions:
             await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
+
+async def searchGoogle(context):
+    '''search Google for the applicable term in a message
+    Preconditions: context, which is the context the message is sent with'''
+    if len(context.message.context) <= 8:
+        await bot.send_message(context.message.channel, 'Make sure to give me something to search for after using this command!')
+    else:
+        for result in neatStuff.search(context.message.content[8:]):
+            await bot.send_message(context.message.channel, result)
 
 @bot.event
 async def on_ready():
@@ -91,6 +101,11 @@ async def icon(context):
 async def fullwidth(context):
     '''convert your message into Unicode Fullwidth'''
     await bot.send_message(context.message.channel, neatStuff.fullwidth(context.message.content[11:]))
+
+@bot.command(pass_context=True)
+async def google(context):
+    '''search Google'''
+    await searchGoogle(context)
 
 @bot.command(pass_context=True)
 async def source(context):

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 '''This module contains functions to be used as responses in main.py'''
+import google
 import os
 import random
 import urllib.request
@@ -69,5 +70,14 @@ def fullwidth(text):
     translator = translator.maketrans('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~' , '０１２３４５６７８９ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～')
     return text.translate(translator)
 
+def search(term):
+    '''Search Google for term and return the first hit.
+    Preconditions: term, a str to search Google for
+    Postconditions: returns a list of matching URLs'''
+    results = []
+    for url in google.search(term, start=1, stop=1 num=1):
+        results.append(url)
+    return url
+
 if __name__ == '__main__':
-    downloadMeme(['https://cdn.discordapp.com/attachments/339179772007415808/340177774411120643/LAFF.png'], ['logo.png'])
+    search('sergals')

@@ -75,9 +75,11 @@ def search(term):
     Preconditions: term, a str to search Google for
     Postconditions: returns a list of matching URLs'''
     results = []
-    for url in google.search(term, start=1, stop=1 num=1):
+    print('Searching google for %s...' %term)
+    for url in google.search(term, start=1, stop=2, num=1):
+        print('Search result for %s: %s' %(term, url))
         results.append(url)
-    return url
+    return results
 
 if __name__ == '__main__':
     search('sergals')

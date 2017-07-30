@@ -47,7 +47,7 @@ async def getIcon(context):
 async def searchGoogle(context):
     '''search Google for the applicable term in a message
     Preconditions: context, which is the context the message is sent with'''
-    if len(context.message.context) <= 8:
+    if len(context.message.content) <= 8:
         await bot.send_message(context.message.channel, 'Make sure to give me something to search for after using this command!')
     else:
         for result in neatStuff.search(context.message.content[8:]):

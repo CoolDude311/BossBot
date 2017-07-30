@@ -4,6 +4,7 @@ import google
 import os
 import random
 import urllib.request
+import wikipedia
 
 sergalFacts = ['Sergals are excessively floofy.', 'Sergals are made of cheese.', 'Sergals originally came from the moon, because, like the moon, they are made of cheese.', 'Sergals are actually just floofy land sharks.', 'Sergals are börk sharks.']
 
@@ -70,7 +71,7 @@ def fullwidth(text):
     translator = translator.maketrans('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~' , '０１２３４５６７８９ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～')
     return text.translate(translator)
 
-def search(term):
+def searchGoogle(term):
     '''Search Google for term and return the first hit.
     Preconditions: term, a str to search Google for
     Postconditions: returns a list of matching URLs'''
@@ -81,5 +82,18 @@ def search(term):
         results.append(url)
     return results
 
+def searchWikipedia(term):
+    '''Search Wikipedia for term and return the first hit.
+    Preconditions: term, a str to search Wikipedia for
+    Postconditions: A url to a matching Wikipedia page'''
+    print('Searching wikipedia for %s...' %term)
+    try:
+        return wikipedia.page(term).url
+    except wikipedia.exceptions.DisambiguationError as de:
+        return wikipedia.page(de.options[0]).url
+    except wikipedia.exceptions.PageError:
+        return 'No page matches the title of "%s"' %term
+
 if __name__ == '__main__':
-    search('sergals')
+    print(searchWikipedia('Stonewall'))
+    print(searchWikipedia('jahdsjgajsdhgljahdsljghljas'))

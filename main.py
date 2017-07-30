@@ -50,7 +50,7 @@ async def searchGoogle(context):
     if len(context.message.content) <= 8:
         await bot.send_message(context.message.channel, 'Make sure to give me something to search for after using this command!')
     else:
-        for result in neatStuff.search(context.message.content[8:]):
+        for result in neatStuff.searchGoogle(context.message.content[8:]):
             await bot.send_message(context.message.channel, result)
 
 @bot.event
@@ -106,6 +106,11 @@ async def fullwidth(context):
 async def google(context):
     '''search Google'''
     await searchGoogle(context)
+
+@bot.command(pass_context=True)
+async def wikipedia(context):
+    '''search Wikipedia'''
+    await bot.send_message(context.message.channel, neatStuff.searchWikipedia(context.message.content[11:]))
 
 @bot.command(pass_context=True)
 async def source(context):

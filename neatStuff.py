@@ -51,8 +51,7 @@ def sendMeme():
 
 def downloadMeme(URLs, filenames):
     '''checks to make sure the meme directory exists, and if it doesn't, creates the directory. If it does exist, downloads the images in URLs.
-    Preconditions: URLs, a list containing valid URLs with images.
-    filenames, a list containing filenames to match with the URLS.'''
+    Preconditions: URLs, a list containing valid URLs with images. filenames, a list containing filenames to match with the URLS.'''
     checkIfMemeDirExists()
     for url in URLs:
         print('URL: %s\nfilename: %s' %(url, filenames[URLs.index(url)]))

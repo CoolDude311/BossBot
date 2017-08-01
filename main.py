@@ -44,13 +44,13 @@ async def getIcon(context):
         for member in context.message.mentions:
             await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
 
-async def searchGoogle(context):
+async def searchGoogle(context, searchParameters=''):
     '''search Google for the applicable term in a message
-    Preconditions: context, which is the context the message is sent with'''
+    Preconditions: context, which is the context the message is sent with. searchParameters, to prepend the actual search term with.'''
     if len(context.message.content) <= 8:
         await bot.send_message(context.message.channel, 'Make sure to give me something to search for after using this command!')
     else:
-        for result in neatStuff.searchGoogle(context.message.content[8:]):
+        for result in neatStuff.searchGoogle(searchParameters + context.message.content[8:]):
             await bot.send_message(context.message.channel, result)
 
 @bot.event
@@ -106,6 +106,11 @@ async def fullwidth(context):
 async def google(context):
     '''search Google'''
     await searchGoogle(context)
+
+@bot.command(pass_context=True)
+async def youtube(context):
+    '''search Google for YouTube videos'''
+    await searchGoogle(context, 'site:youtube.com ')
 
 @bot.command(pass_context=True)
 async def wikipedia(context):

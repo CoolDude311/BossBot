@@ -32,8 +32,10 @@ async def downloadMeme(context):
     for attachment in context.message.attachments:
         URLs.append(attachment['url'])
         filenames.append(attachment['filename'])
-        await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
-    neatStuff.downloadMeme(URLs, filenames)
+        if neatStuff.downloadMeme(URLs, filenames):
+            await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
+        else:
+            await bot.send_message(context.message.channel, 'This file type is not allowed. Please only upload GIFs, JPEGs, or PNGs.')
 
 async def getIcon(context):
     '''send the avatar urls of the mentioned users in a message, to be used with icon command

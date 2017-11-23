@@ -3,6 +3,7 @@
 import google
 import os
 import random
+import re
 import urllib.request
 import wikipedia
 
@@ -54,14 +55,20 @@ def downloadMeme(URLs, filenames):
     Preconditions: URLs, a list containing valid URLs with images. filenames, a list containing filenames to match with the URLS.'''
     checkIfMemeDirExists()
     for url in URLs:
-        print('URL: %s\nfilename: %s' %(url, filenames[URLs.index(url)]))
-        request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})        
-        openedRequest = urllib.request.urlopen(request)
-        print('Downloading image %s...' %filenames[URLs.index(url)])
-        image = open('./memes/%s' %filenames[URLs.index(url)], 'wb')
-        image.write(openedRequest.read())
-        image.close()
-        print('%s downloaded and saved to ./memes' %filenames[URLs.index(url)])
+        acceptableFileTypes = re.compile('jpeg|jpg|png|gif')
+        fileType = url.split('.')[-1]
+        if bool(acceptableFileTypes.search(fileType)):
+            print('URL: %s\nfilename: %s' %(url, filenames[URLs.index(url)]))
+            request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})        
+            openedRequest = urllib.request.urlopen(request)
+            print('Downloading image %s...' %filenames[URLs.index(url)])
+            image = open('./memes/%s' %filenames[URLs.index(url)], 'wb')
+            image.write(openedRequest.read())
+            image.close()
+            print('%s downloaded and saved to ./memes' %filenames[URLs.index(url)])
+            return 1
+        else:
+            return 0
 
 def fullwidth(text):
     '''converts a regular string to Unicode Fullwidth

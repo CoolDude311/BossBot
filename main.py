@@ -7,9 +7,13 @@ import configHandler
 import neatStuff
 import discord
 from discord.ext import commands
+import logging
+
+logging.basicConfig(level = logging.INFO)
 
 bot_prefix = '$' #this is the prefix to be used in a Discord channel to get the bot's attention
 description = 'Hello! I can do many things, like the stuff below. Get my attention with %s' %bot_prefix
+botStatus = 'ass'
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
@@ -66,6 +70,7 @@ async def on_ready():
     print('Username: %s' %bot.user.name)
     print('ID: %s' %str(bot.user.id))
     print('Running on Discord.py ' + discord.__version__)
+    await bot.change_presence(game = discord.Game(name = botStatus))
 
 @bot.command(pass_context=True) #passes context from command
 async def ping(context):
@@ -110,11 +115,13 @@ async def fullwidth(context):
 @bot.command(pass_context=True)
 async def google(context):
     '''search Google'''
+    await bot.send_message(context.message.channel, 'Searching Google for %s...' %context.message.content[8:])
     await searchGoogle(context)
 
 @bot.command(pass_context=True)
 async def youtube(context):
     '''search Google for YouTube videos'''
+    await bot.send_message(context.message.channel, 'Searching YouTube for %s...' %context.message.content[9:])
     await searchGoogle(context, 'site:youtube.com ')
 
 @bot.command(pass_context=True)
@@ -138,6 +145,9 @@ def init():
     configHandler.makeConfig()
     apiKeys = configHandler.readApiKeys()
     print('Discord API Key: %s' %apiKeys[0])
+    global botStatus
+    botStatus = input('What would you like the bot\'s status to be? ')
+    print('\nLogging in...')
     bot.run(str(apiKeys[0])) #login to Discord using a Bot API in place of token
 
 if __name__ == '__main__':

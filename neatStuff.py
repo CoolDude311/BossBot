@@ -58,6 +58,9 @@ def downloadMeme(URLs, filenames):
         acceptableFileTypes = re.compile('jpeg|jpg|png|gif')
         fileType = url.split('.')[-1]
         if bool(acceptableFileTypes.search(fileType)):
+            print('./memes/%s' %filenames[URLs.index(url)])
+            if os.path.exists('./memes/%s' %filenames[URLs.index(url)]):
+                return 2
             print('URL: %s\nfilename: %s' %(url, filenames[URLs.index(url)]))
             request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})        
             openedRequest = urllib.request.urlopen(request)
@@ -66,9 +69,9 @@ def downloadMeme(URLs, filenames):
             image.write(openedRequest.read())
             image.close()
             print('%s downloaded and saved to ./memes' %filenames[URLs.index(url)])
-            return 1
-        else:
             return 0
+        else:
+            return 1
 
 def fullwidth(text):
     '''converts a regular string to Unicode Fullwidth

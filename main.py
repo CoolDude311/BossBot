@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 '''BossBot: An adaptable Discord bot written in Python.
-This file contains all functions that need direct interaction with Discord.
-Author: William Harrell'''
+This file contains all functions that need direct interaction with Discord.'''
 import asyncio
-import configHandler
+import config_handler
 import neatStuff
 import discord
 from discord.ext import commands
@@ -13,7 +12,8 @@ logging.basicConfig(level = logging.INFO)
 
 bot_prefix = '$' #this is the prefix to be used in a Discord channel to get the bot's attention
 description = 'Hello! I can do many things, like the stuff below. Get my attention with %s' %bot_prefix
-botStatus = 'ass'
+botStatus = ''
+config = {}
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
@@ -66,7 +66,7 @@ async def searchGoogle(context, searchParameters=''):
 async def on_ready():
     '''prints Discord login information and version info to console when the bot has logged in'''
     print('\n==INITIALIZATION COMPLETE==')
-    print('BossBot is logged in, reporting for duty!')
+    print('BossBot is logged in')
     print('Username: %s' %bot.user.name)
     print('ID: %s' %str(bot.user.id))
     print('Running on Discord.py ' + discord.__version__)
@@ -141,22 +141,13 @@ async def invite(context):
     await bot.send_message(context.message.author, discord.utils.oauth_url(bot.user.id))
 
 def init():
-    '''Imports the configuration from "./config/main.conf" and starts the bot'''
-    configHandler.makeConfig()
-    apiKeys = configHandler.readApiKeys()
-    print('Discord API Key: %s' %apiKeys[0])
+    '''Imports the configuration and starts the bot'''
+    global config
     global botStatus
+    config = config_handler.checkConfig()
     botStatus = input('What would you like the bot\'s status to be? ')
     print('\nLogging in...')
-    bot.run(str(apiKeys[0])) #login to Discord using a Bot API in place of token
+    bot.run(config["api_keys"]["discord"]) #login to Discord using a Bot API in place of token
 
 if __name__ == '__main__':
     init()
-
-'''
-Research used:
-    Discord bot beginning tutorial (used for learning how to initially set up the bot, and what additional skills would need to be gained before the bot could be written: https://youtu.be/bYfhQODnH0g
-    Discord.py Documentation: https://discordpy.readthedocs.io/en/latest/api.html#client
-    Video on Python Decorators: https://youtu.be/mZ5IwFfqvz8
-    Stackoverflow questions on how to spoof a User-Agent with urllib to get around Discord's refusal to serve bots: https://stackoverflow.com/questions/24226781/changing-user-agent-in-python-3-for-urrlib-request-urlopen, https://stackoverflow.com/questions/8286352/how-to-save-an-image-locally-using-python-whose-url-address-i-already-know
-'''

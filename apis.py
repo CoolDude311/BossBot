@@ -1,5 +1,8 @@
+import google
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import json
+import urllib.request
 
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -11,6 +14,15 @@ class YoutubeResult:
         self.description = description
         self.result_id = result_id
         self.url = "https://youtu.be/" + result_id
+
+def google_search(search_term, num_results=1):
+    """Search Google for search_term and return a list of resulting URLs\n
+    search_term: string to search for\n
+    num_results: number of results to return"""
+    results = []
+    for url in google.search(search_term, start=1, stop=1+num_results, num=1):
+        results.append(url)
+    return results
 
 def youtube_search(search_term, max_results, api_key, search_type="video"):
     """Searches YouTube and returns max_results in a list. Adapted from the YouTube GitHub example.\n
@@ -37,7 +49,19 @@ def youtube_search(search_term, max_results, api_key, search_type="video"):
 
     return results
 
+def wikipedia_search(search_term):
+    """Search Wikipedia for term and return the first hit. If no matches, return -1\n
+    search_term: string to search for"""
+
+    #get page id
+    request_id = urllib.request.Request("https://en.wikipedia.org/w/api.php?action=query&titles=%s&format=json" %search_term, headers={"User-Agent":"BossBot/v1.5"})
+    request_id = json.loads(urllib.request.urlopen(request_id).read())
+    page_id = list(request_id["query"]["pages"].keys())[0]
+
+    #get actual url
+    request_page = urllib.request.Request("https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=%s&inprop=url&format=json" %page_id, headers={"User-Agent":"BossBot/v1.5"})
+    request_page = json.loads(urllib.request.urlopen(request_page).read())
+    return request_page["query"]["pages"][str(page_id)]["fullurl"]
+
 if __name__ == "__main__":
-    results = youtube_search("furries", 10, "api_key")
-    for result in results:
-        print("%s, %s, %s, %s, %s\n" %(result.title, result.result_type, result.description, result.result_id, result.url))
+    print(wikipedia_search("xenon"))

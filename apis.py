@@ -1,4 +1,4 @@
-import google
+import googlesearch
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import json
@@ -15,14 +15,27 @@ class YoutubeResult:
         self.result_id = result_id
         self.url = "https://youtu.be/" + result_id
 
+def replace_spaces(string):
+    """Replace spaces with %20 to be used in API calls\n
+    string: a string with spaces in it"""
+    final_string = ""
+    for character in string:
+        if character == " ":
+            final_string += "%20"
+        else:
+            final_string += character
+    print(final_string)
+    return final_string
+
 def google_search(search_term, num_results=1):
     """Search Google for search_term and return a list of resulting URLs\n
     search_term: string to search for\n
     num_results: number of results to return"""
     results = []
-    for url in google.search(search_term, start=1, stop=1+num_results, num=1):
+    for url in googlesearch.search(search_term, start=1, stop=1+num_results, num=1):
         results.append(url)
     return results
+
 
 def youtube_search(search_term, max_results, api_key, search_type="video"):
     """Searches YouTube and returns max_results in a list. Adapted from the YouTube GitHub example.\n
@@ -30,7 +43,7 @@ def youtube_search(search_term, max_results, api_key, search_type="video"):
     max_results: number of results to return\n
     api_key: Google API key with access to YouTube Data API\n
     search_type: string with type of content (video, channel, playlist)"""
-    client = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=api_key)
+    client = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=api_key, cache_discovery=False)
 
     search_response = client.search().list(q=search_term, part="id,snippet", maxResults=max_results, type=search_type).execute()
 
@@ -53,6 +66,8 @@ def wikipedia_search(search_term):
     """Search Wikipedia for term and return the first hit. If no matches, return -1\n
     search_term: string to search for"""
 
+    search_term = replace_spaces(search_term)
+
     #get page id
     request_id = urllib.request.Request("https://en.wikipedia.org/w/api.php?action=query&titles=%s&format=json" %search_term, headers={"User-Agent":"BossBot/v1.5"})
     request_id = json.loads(urllib.request.urlopen(request_id).read())
@@ -64,4 +79,5 @@ def wikipedia_search(search_term):
     return request_page["query"]["pages"][str(page_id)]["fullurl"]
 
 if __name__ == "__main__":
+    replace_spaces("space bar")
     print(wikipedia_search("xenon"))

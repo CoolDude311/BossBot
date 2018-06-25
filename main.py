@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''BossBot: An adaptable Discord bot written in Python.
 This file contains all functions that need direct interaction with Discord.'''
+from apis import *
 import asyncio
 import config_handler
 import neatStuff
@@ -52,15 +53,6 @@ async def getIcon(context):
     else:
         for member in context.message.mentions:
             await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
-
-async def searchGoogle(context, searchParameters=''):
-    '''search Google for the applicable term in a message
-    Preconditions: context, which is the context the message is sent with. searchParameters, to prepend the actual search term with.'''
-    if len(context.message.content) <= 8:
-        await bot.send_message(context.message.channel, 'Make sure to give me something to search for after using this command!')
-    else:
-        for result in neatStuff.searchGoogle(searchParameters + context.message.content[8:]):
-            await bot.send_message(context.message.channel, result)
 
 @bot.event
 async def on_ready():
@@ -116,18 +108,25 @@ async def fullwidth(context):
 async def google(context):
     '''search Google'''
     await bot.send_message(context.message.channel, 'Searching Google for %s...' %context.message.content[8:])
-    await searchGoogle(context)
+    await bot.send_message(context.message.channel, google_search(context.message.content[8:])[0])
 
 @bot.command(pass_context=True)
 async def youtube(context):
-    '''search Google for YouTube videos'''
-    await bot.send_message(context.message.channel, 'Searching YouTube for %s...' %context.message.content[9:])
-    await searchGoogle(context, 'site:youtube.com ')
+    '''search for YouTube videos'''
+    if config["youtube_settings"]["youtube_enabled"]:
+        try:
+            await bot.send_message(context.message.channel, 'Searching YouTube for %s...' %context.message.content[9:])
+            for result in youtube_search(context.message.content[9:], 1, config["api_keys"]["youtube"]):
+                await bot.send_message(context.message.channel, result.url)
+        except ImportError:
+            print("An error occured when searching YouTube. It may be alright.")
+    else:
+        await bot.send_message(context.message.channel, "YouTube functionality has not been enabled. Please talk to my owner.")
 
 @bot.command(pass_context=True)
 async def wikipedia(context):
     '''search Wikipedia'''
-    await bot.send_message(context.message.channel, neatStuff.searchWikipedia(context.message.content[11:]))
+    await bot.send_message(context.message.channel, wikipedia_search(context.message.content[11:]))
 
 @bot.command(pass_context=True)
 async def source(context):

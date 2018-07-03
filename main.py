@@ -15,6 +15,7 @@ bot_prefix = '$' #this is the prefix to be used in a Discord channel to get the 
 description = 'Hello! I can do many things, like the stuff below. Get my attention with %s' %bot_prefix
 botStatus = ''
 config = {}
+youtube = False
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
@@ -113,10 +114,10 @@ async def google(context):
 @bot.command(pass_context=True)
 async def youtube(context):
     '''search for YouTube videos'''
-    if config["youtube_settings"]["youtube_enabled"]:
+    if youtube != False:
         try:
             await bot.send_message(context.message.channel, 'Searching YouTube for %s...' %context.message.content[9:])
-            for result in youtube_search(context.message.content[9:], 1, config["api_keys"]["youtube"]):
+            for result in youtube.video_search(context.message.content[9:], 1):
                 await bot.send_message(context.message.channel, result.url)
         except ImportError:
             print("An error occured when searching YouTube. It may be alright.")
@@ -143,7 +144,10 @@ def init():
     '''Imports the configuration and starts the bot'''
     global config
     global botStatus
+    global youtube
     config = config_handler.checkConfig()
+    if config["youtube_settings"]["youtube_enabled"]:
+        youtube = YoutubeSearch(config["api_keys"]["youtube"])
     botStatus = input('What would you like the bot\'s status to be? ')
     print('\nLogging in...')
     bot.run(config["api_keys"]["discord"]) #login to Discord using a Bot API in place of token

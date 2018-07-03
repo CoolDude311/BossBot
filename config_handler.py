@@ -69,7 +69,7 @@ def createConfig():
     user_setup = booleanInput("Would you like to set up other settings now? These can be changed later in the configuration file. [Y/n] ")
 
     if user_setup:
-        youtube_setup = booleanInput("Set up YouTube API? [Y/n] ")
+        youtube_setup = booleanInput("Set up YouTube API? This requires an API key. [Y/n] ")
         if youtube_setup:
             config["youtube_settings"]["youtube_enabled"] = True
             config["api_keys"]["youtube"] = input("Paste your Google API key (make sure that YouTube is enabled in API console): ")

@@ -7,6 +7,49 @@ import urllib.request
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
+class YoutubeSearch:
+    """An object that can be used to search YouTube for content.\n
+    Logs in using the provided API key when the object is initialized, and remains logged in until the object is deleted."""
+    def __init__(self, api_key):
+        self.client = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=api_key, cache_discovery=False)
+        print("YoutubeSearch initialized")
+    
+    def search(self, search_term, max_results, search_type=["video", "channel", "playlist"]):
+        search_response = self.client.search().list(q=search_term, part="id,snippet", maxResults=max_results, type=search_type).execute()
+
+        results = []
+        for result in search_response.get("items", []):
+            title = result["snippet"]["title"]
+            result_type = result["id"]["kind"].replace("youtube#", "")
+            description = result["snippet"]["description"]
+            if result_type == "video":
+                result_id = result["id"]["videoId"]
+            elif result_type == "channel":
+                result_id = result["id"]["channelId"]
+            elif result_type == "playlist":
+                result_id = result["id"]["playlistId"]
+            results.append(YoutubeResult(title, result_type, description, result_id))
+        
+        return results
+
+    def video_search(self, search_term, max_results):
+        """Search YouTube for video(s). Returns a list of YoutubeResult objects\n
+        search_term: string to search for\n
+        max_results: maximum number of results to add to return list"""
+        return self.search(search_term, max_results, ["video"])
+
+    def channel_search(self, search_term, max_results):
+        """Search YouTube for channel(s). Returns a list of YoutubeResult objects\n
+        search_term: string to search for\n
+        max_results: maximum number of results to add to return list"""
+        return self.search(search_term, max_results, ["channel"])
+
+    def playlist_search(self, search_term, max_results):
+        """Search YouTube for playlist(s). Returns a list of YoutubeResult objects\n
+        search_term: string to search for\n
+        max_results: maximum number of results to add to return list"""
+        return self.search(search_term, max_results, ["playlist"])
+
 class YoutubeResult:
     def __init__(self, title, result_type, description, result_id):
         self.title = title
@@ -35,7 +78,6 @@ def google_search(search_term, num_results=1):
     for url in googlesearch.search(search_term, start=1, stop=1+num_results, num=1):
         results.append(url)
     return results
-
 
 def youtube_search(search_term, max_results, api_key, search_type="video"):
     """Searches YouTube and returns max_results in a list. Adapted from the YouTube GitHub example.\n
@@ -79,5 +121,8 @@ def wikipedia_search(search_term):
     return request_page["query"]["pages"][str(page_id)]["fullurl"]
 
 if __name__ == "__main__":
-    replace_spaces("space bar")
-    print(wikipedia_search("xenon"))
+    client = YoutubeSearch("api_key")
+    print(client.video_search("furries", 1)[0].url)
+    print(client.channel_search("rebeltaxi", 1)[0].url)
+    print(client.channel_search("xenu's prophet", 1)[0].url)
+    print(client.playlist_search("hover revolt of gamers ost", 1)[0].url)

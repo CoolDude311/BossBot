@@ -8,6 +8,7 @@ import neatStuff
 import discord
 from discord.ext import commands
 import logging
+from sys import exit
 
 logging.basicConfig(level = logging.INFO)
 
@@ -15,7 +16,7 @@ bot_prefix = '$' #this is the prefix to be used in a Discord channel to get the 
 description = 'Hello! I can do many things, like the stuff below. Get my attention with %s' %bot_prefix
 botStatus = ''
 config = {}
-youtube = False
+youtube_handler = False
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
@@ -117,7 +118,7 @@ async def youtube(context):
     if youtube != False:
         try:
             await bot.send_message(context.message.channel, 'Searching YouTube for %s...' %context.message.content[9:])
-            for result in youtube.video_search(context.message.content[9:], 1):
+            for result in youtube_handler.video_search(context.message.content[9:], 1):
                 await bot.send_message(context.message.channel, result.url)
         except ImportError:
             print("An error occured when searching YouTube. It may be alright.")
@@ -144,13 +145,25 @@ def init():
     '''Imports the configuration and starts the bot'''
     global config
     global botStatus
-    global youtube
+    global youtube_handler
     config = config_handler.checkConfig()
     if config["youtube_settings"]["youtube_enabled"]:
-        youtube = YoutubeSearch(config["api_keys"]["youtube"])
+        youtube_handler = YoutubeSearch(config["api_keys"]["youtube"])
     botStatus = input('What would you like the bot\'s status to be? ')
-    print('\nLogging in...')
-    bot.run(config["api_keys"]["discord"]) #login to Discord using a Bot API in place of token
+    while True:
+        try:
+            loop = asyncio.get_event_loop()
+            print("Logging in...")
+            loop.run_until_complete(bot.start(config["api_keys"]["discord"]))
+        except KeyboardInterrupt:
+            print("\nLogging off...")
+            bot.logout()
+            bot.close()
+            print("Successfully exited. Thank you for using BossBot.")
+            exit(0)
+        except Exception as e:
+            print("Error", e)
+            print("Attempting restart...")
 
 if __name__ == '__main__':
     init()

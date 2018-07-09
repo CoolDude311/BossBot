@@ -51,31 +51,6 @@ def sendMeme():
         checkIfMemeDirExists()
         return sendMeme()
 
-"""
-def downloadMeme(URLs, filenames):
-    '''checks to make sure the meme directory exists, and if it doesn't, creates the directory. If it does exist, downloads the images in URLs.
-    Preconditions: URLs, a list containing valid URLs with images. filenames, a list containing filenames to match with the URLS.'''
-    checkIfMemeDirExists()
-    for url in URLs:
-        acceptableFileTypes = re.compile('jpeg|jpg|png|gif')
-        fileType = url.split('.')[-1]
-        if bool(acceptableFileTypes.search(fileType)):
-            print('./memes/%s' %filenames[URLs.index(url)])
-            if os.path.exists('./memes/%s' %filenames[URLs.index(url)]):
-                return 2
-            print('URL: %s\nfilename: %s' %(url, filenames[URLs.index(url)]))
-            request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})        
-            openedRequest = urllib.request.urlopen(request)
-            print('Downloading image %s...' %filenames[URLs.index(url)])
-            image = open('./memes/%s' %filenames[URLs.index(url)], 'wb')
-            image.write(openedRequest.read())
-            image.close()
-            print('%s downloaded and saved to ./memes' %filenames[URLs.index(url)])
-            return 0
-        else:
-            return 1
-"""
-
 async def downloadImage(URLs, filenames):
     """downloads images in jpg, png, and gif format\n
     URLS: list of URLs to images\n
@@ -91,6 +66,7 @@ async def downloadImage(URLs, filenames):
                     with open("./memes/" + filenames[URLs.index(url)], "wb") as image:
                         image.write(await response.read())
                         print(filenames[URLs.index(url)], "added to memes")
+    return 0
 
 def fullwidth(text):
     '''converts a regular string to Unicode Fullwidth

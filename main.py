@@ -20,42 +20,6 @@ youtube_handler = False
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
-async def memeHandler(context):
-    '''performs the appropriate action based on what neatStuff.sendMeme() returns'''
-    meme = neatStuff.sendMeme()
-    if meme[:2] == './':
-        print('sending meme %s' %meme)
-        await bot.send_file(context.message.channel, meme)
-        print('%s was successfully uploaded' %meme)
-    elif meme == 'no memes':
-        await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some with %suploadMeme!' %bot_prefix)
-    else:
-        print('An error occured when trying to send a meme.')
-
-async def downloadMeme(context):
-    '''saves the attachments in an attachment list'''
-    URLs = []
-    filenames = []
-    for attachment in context.message.attachments:
-        URLs.append(attachment['url'])
-        filenames.append(attachment['filename'])
-        result = await neatStuff.downloadImage(URLs, filenames)
-        if result == 0:
-            await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
-        elif result == 1:
-            await bot.send_message(context.message.channel, 'This file type is not allowed. Please only upload GIFs, JPEGs, or PNGs.')
-        elif result == 2:
-            await bot.send_message(context.message.channel, 'I already have this meme!')
-
-async def getIcon(context):
-    '''send the avatar urls of the mentioned users in a message, to be used with icon command
-    Preconditions: context, which is the context the message is sent with'''
-    if len(context.message.mentions) == 0:
-        await bot.send_message(context.message.channel, 'Make sure to mention a user(s) after using this command!')
-    else:
-        for member in context.message.mentions:
-            await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
-
 @bot.event
 async def on_ready():
     '''prints Discord login information and version info to console when the bot has logged in'''
@@ -89,17 +53,39 @@ async def death(context):
 @bot.command(pass_context=True)
 async def meme(context):
     '''sends a meme to the channel'''
-    await memeHandler(context)
+    meme = neatStuff.sendMeme()
+    if meme[:2] == './':
+        await bot.send_file(context.message.channel, meme)
+    elif meme == 'no memes':
+        await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some with %suploadMeme!' %bot_prefix)
+    else:
+        print('An error occured when trying to send a meme.')
 
 @bot.command(pass_context=True)
 async def uploadMeme(context):
     '''upload a meme for me to add to the meme command'''
-    await downloadMeme(context)
+    URLs = []
+    filenames = []
+    for attachment in context.message.attachments:
+        URLs.append(attachment['url'])
+        filenames.append(attachment['filename'])
+        result = await neatStuff.downloadImage(URLs, filenames)
+        print("result:", result)
+        if result == 0:
+            await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
+        elif result == 1:
+            await bot.send_message(context.message.channel, 'This file type is not allowed. Please only upload GIFs, JPEGs, or PNGs.')
+        elif result == 2:
+            await bot.send_message(context.message.channel, 'I already have this meme!')
 
 @bot.command(pass_context=True)
 async def icon(context):
     '''When no arguments are given, return the bot's icon. When a valid user is given, return the user's icon.'''
-    await getIcon(context)
+    if len(context.message.mentions) == 0:
+        await bot.send_message(context.message.channel, 'Make sure to mention a user(s) after using this command!')
+    else:
+        for member in context.message.mentions:
+            await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
 
 @bot.command(pass_context=True)
 async def fullwidth(context):

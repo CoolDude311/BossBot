@@ -39,7 +39,7 @@ async def downloadMeme(context):
     for attachment in context.message.attachments:
         URLs.append(attachment['url'])
         filenames.append(attachment['filename'])
-        result = neatStuff.downloadMeme(URLs, filenames)
+        result = await neatStuff.downloadImage(URLs, filenames)
         if result == 0:
             await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
         elif result == 1:

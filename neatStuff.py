@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 '''This module contains functions to be used as responses in main.py'''
+import aiohttp
 import os
 import random
 import re
-import urllib.request
+#import urllib.request
 
+acceptableFileTypes = re.compile('jpeg|jpg|png|gif')
+headers = {"User-Agent":"BossBot/v1.5"}
 sergalFacts = ['Sergals are excessively floofy.', 'Sergals are made of cheese.', 'Sergals originally came from the moon, because, like the moon, they are made of cheese.', 'Sergals are actually just floofy land sharks.', 'Sergals are börk sharks.']
 
 def rollDice(dieSides=6):
@@ -48,6 +51,7 @@ def sendMeme():
         checkIfMemeDirExists()
         return sendMeme()
 
+"""
 def downloadMeme(URLs, filenames):
     '''checks to make sure the meme directory exists, and if it doesn't, creates the directory. If it does exist, downloads the images in URLs.
     Preconditions: URLs, a list containing valid URLs with images. filenames, a list containing filenames to match with the URLS.'''
@@ -70,6 +74,23 @@ def downloadMeme(URLs, filenames):
             return 0
         else:
             return 1
+"""
+
+async def downloadImage(URLs, filenames):
+    """downloads images in jpg, png, and gif format\n
+    URLS: list of URLs to images\n
+    filenames: list of filenames that correspond to URLs"""
+    checkIfMemeDirExists()
+    for url in URLs:
+        fileType = url.split('.')[-1]
+        if bool(acceptableFileTypes.search(fileType)):
+            if os.path.exists('./memes/%s' %filenames[URLs.index(url)]):
+                return 2
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers) as response:
+                    with open("./memes/" + filenames[URLs.index(url)], "wb") as image:
+                        image.write(await response.read())
+                        print(filenames[URLs.index(url)], "added to memes")
 
 def fullwidth(text):
     '''converts a regular string to Unicode Fullwidth

@@ -8,6 +8,7 @@ import neatStuff
 import discord
 from discord.ext import commands
 import logging
+from random import choice, randint
 from sys import exit
 
 logging.basicConfig(level = logging.INFO)
@@ -17,6 +18,8 @@ description = 'Hello! I can do many things, like the stuff below. Get my attenti
 botStatus = ''
 config = {}
 youtube_handler = False
+
+colours = [discord.Colour.teal(), discord.Colour.dark_teal(), discord.Colour.green(), discord.Colour.dark_green(), discord.Colour.blue(), discord.Colour.dark_blue(), discord.Colour.purple(), discord.Colour.dark_purple(), discord.Colour.magenta(), discord.Colour.dark_magenta(), discord.Colour.gold(), discord.Colour.dark_gold(), discord.Colour.orange(), discord.Colour.dark_orange(), discord.Colour.red(), discord.Colour.dark_red()]
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
 
@@ -33,22 +36,27 @@ async def on_ready():
 @bot.command(pass_context=True) #passes context from command
 async def ping(context):
     '''play pong'''
-    await bot.send_message(context.message.channel, 'Pong!')
+    await bot.send_message(context.message.channel, embed=discord.Embed(title="Pong!", colour=choice(colours)))
 
 @bot.command(pass_context=True)
 async def sergals(context):
     '''get an interesting sergal fact'''
-    await bot.send_message(context.message.channel, neatStuff.sendSergalFact())
+    embed = discord.Embed(title="Sergal Fact #" + str(randint(1, 100)), description=neatStuff.sendSergalFact(), colour=choice(colours))
+    await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def dice(context):
     '''roll a dice'''
-    await bot.send_message(context.message.channel, '%s rolled a %d' %(context.message.author.mention, neatStuff.rollDice()))
+    embed = discord.Embed(title='%s rolled a %d' %(context.message.author.name, neatStuff.rollDice()), colour=choice(colours))
+    embed.set_author(name=context.message.author.name, icon_url=context.message.author.avatar_url)
+    await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def death(context):
     '''find out when you will die'''
-    await bot.send_message(context.message.channel, neatStuff.deathclock())
+    embed = discord.Embed(title=neatStuff.deathclock(), colour=choice(colours))
+    embed.set_author(name=context.message.author.name, icon_url=context.message.author.avatar_url)
+    await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def meme(context):
@@ -57,7 +65,8 @@ async def meme(context):
     if meme[:2] == './':
         await bot.send_file(context.message.channel, meme)
     elif meme == 'no memes':
-        await bot.send_message(context.message.channel, 'I don\'t have any memes. Try sending me some with %suploadMeme!' %bot_prefix)
+        embed = discord.Embed(title="I don't have any memes. Try sending me some with %suploadMeme" %bot_prefix, colour=choice(colours))
+        await bot.send_message(context.message.channel, embed=embed)
     else:
         print('An error occured when trying to send a meme.')
 
@@ -72,44 +81,44 @@ async def uploadMeme(context):
         result = await neatStuff.downloadImage(URLs, filenames)
         print("result:", result)
         if result == 0:
-            await bot.send_message(context.message.channel, '%s was added to my meme repository' %attachment['filename'])
+            await bot.send_message(context.message.channel, embed=discord.Embed(title='%s was added to my meme repository' %attachment['filename'], colour=choice(colours)))
         elif result == 1:
-            await bot.send_message(context.message.channel, 'This file type is not allowed. Please only upload GIFs, JPEGs, or PNGs.')
+            await bot.send_message(context.message.channel, embed=discord.Embed(title='This file type is not allowed. Please only upload GIFs, JPEGs, or PNGs.', colour=choice(colours)))
         elif result == 2:
-            await bot.send_message(context.message.channel, 'I already have this meme!')
+            await bot.send_message(context.message.channel, embed=discord.Embed(title='I already have this meme!', colour=choice(colours)))
 
 @bot.command(pass_context=True)
 async def icon(context):
     '''When no arguments are given, return the bot's icon. When a valid user is given, return the user's icon.'''
     if len(context.message.mentions) == 0:
-        await bot.send_message(context.message.channel, 'Make sure to mention a user(s) after using this command!')
+        await bot.send_message(context.message.channel, embed=discord.Embed(title='Make sure to mention a user(s) after using this command!', colour=choice(colours)))
     else:
         for member in context.message.mentions:
-            await bot.send_message(context.message.channel, 'Icon of %s: %s' %(member.mention, member.avatar_url))
+            embed = discord.Embed(title="Icon of " + member.name, colour=choice(colours))
+            embed.set_author(name=member.name, icon_url=member.avatar_url)
+            embed.set_image(url=member.avatar_url)
+            await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def fullwidth(context):
     '''convert your message into Unicode Fullwidth'''
-    await bot.send_message(context.message.channel, neatStuff.fullwidth(context.message.content[11:]))
-
-@bot.command(pass_context=True)
-async def google(context):
-    '''search Google'''
-    await bot.send_message(context.message.channel, 'Searching Google for %s...' %context.message.content[8:])
-    await bot.send_message(context.message.channel, google_search(context.message.content[8:])[0])
+    embed = discord.Embed(title=neatStuff.fullwidth(context.message.content[11:]), colour=discord.Colour.purple())
+    embed.set_author(name=context.message.author.name, icon_url=context.message.author.avatar_url)
+    await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def youtube(context):
     '''search for YouTube videos'''
     if youtube != False:
         try:
-            await bot.send_message(context.message.channel, 'Searching YouTube for %s...' %context.message.content[9:])
             for result in youtube_handler.video_search(context.message.content[9:], 1):
                 await bot.send_message(context.message.channel, result.url)
         except ImportError:
             print("An error occured when searching YouTube. It may be alright.")
     else:
-        await bot.send_message(context.message.channel, "YouTube functionality has not been enabled. Please talk to my owner.")
+        embed = discord.Embed(title="YouTube functionality has not been enabled. Please talk to my owner.", colour=discord.Colour.dark_red())
+        embed.set_author(name=context.message.author.name, icon_url=context.message.author.avatar_url)
+        await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def wikipedia(context):
@@ -124,32 +133,39 @@ async def source(context):
 @bot.command(pass_context=True)
 async def invite(context):
     '''use this to receive a link to add me to your server'''
-    await bot.send_message(context.message.channel, 'PMing %s an invite link...' %context.message.author.mention)
     await bot.send_message(context.message.author, discord.utils.oauth_url(bot.user.id))
 
-def init():
-    '''Imports the configuration and starts the bot'''
-    global config
-    global botStatus
-    global youtube_handler
+if __name__ == '__main__':
     config = config_handler.checkConfig()
     if config["youtube_settings"]["youtube_enabled"]:
         youtube_handler = YoutubeSearch(config["api_keys"]["youtube"])
     botStatus = input('What would you like the bot\'s status to be? ')
     while True:
         try:
-            loop = asyncio.get_event_loop()
             print("Logging in...")
-            loop.run_until_complete(bot.start(config["api_keys"]["discord"]))
+            bot.loop.run_until_complete(bot.start(config["api_keys"]["discord"]))
         except KeyboardInterrupt:
             print("\nLogging off...")
             bot.logout()
             bot.close()
             print("Successfully exited. Thank you for using BossBot.")
             exit(0)
-        except Exception as e:
-            print("Error", e)
+        except Exception as error:
+            print("Error:", error)
             print("Attempting restart...")
-
-if __name__ == '__main__':
-    init()
+            bot.loop.run_until_complete(bot.logout())
+            for task in asyncio.Task.all_tasks(loop=bot.loop):
+                if task.done():
+                    task.exception()
+                    continue
+                task.cancel()
+                try:
+                    bot.loop.run_until_complete(asyncio.wait_for(task, 5, loop=bot.loop))
+                    task.exception()
+                except asyncio.InvalidStateError:
+                    pass
+                except asyncio.TimeoutError:
+                    pass
+                except asyncio.CancelledError:
+                    pass
+            bot = discord.Client(loop=bot.loop)

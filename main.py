@@ -22,6 +22,7 @@ youtube_handler = False
 colours = [discord.Colour.teal(), discord.Colour.dark_teal(), discord.Colour.green(), discord.Colour.dark_green(), discord.Colour.blue(), discord.Colour.dark_blue(), discord.Colour.purple(), discord.Colour.dark_purple(), discord.Colour.magenta(), discord.Colour.dark_magenta(), discord.Colour.gold(), discord.Colour.dark_gold(), discord.Colour.orange(), discord.Colour.dark_orange(), discord.Colour.red(), discord.Colour.dark_red()]
 
 bot = commands.Bot(description=description, command_prefix=bot_prefix) #create an instance of Bot
+bot.remove_command("help")
 
 @bot.event
 async def on_ready():
@@ -31,7 +32,23 @@ async def on_ready():
     print('Username: %s' %bot.user.name)
     print('ID: %s' %str(bot.user.id))
     print('Running on Discord.py ' + discord.__version__)
-    await bot.change_presence(game = discord.Game(name = botStatus))
+    if len(botStatus) > 0:
+        await bot.change_presence(game = discord.Game(name = botStatus))
+
+@bot.command(pass_context=True)
+async def help(context):
+    embed = discord.Embed(title="Help", colour = discord.Colour.dark_purple())
+    embed.add_field(name="death", value="find out when you will die", inline=False)
+    embed.add_field(name="dice", value="roll a dice", inline=False)
+    embed.add_field(name="fullwidth", value="convert some text to fullwidth", inline=False)
+    embed.add_field(name="invite", value="get a link that lets you add me to your server", inline=False)
+    embed.add_field(name="meme", value="get a random meme", inline=False)
+    embed.add_field(name="uploadmeme", value="give me a meme for me to use with the meme command. To use it, send an image and put this command in the caption", inline=False)
+    embed.add_field(name="sergals", value="get a random sergal fact", inline=False)
+    embed.add_field(name="wikipedia", value="search Wikipedia", inline=False)
+    embed.add_field(name="youtube", value="search YouTube", inline=False)
+    embed.add_field(name="about", value="Get information about this bot", inline=False)
+    await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True) #passes context from command
 async def ping(context):
@@ -126,9 +143,14 @@ async def wikipedia(context):
     await bot.send_message(context.message.channel, wikipedia_search(context.message.content[11:]))
 
 @bot.command(pass_context=True)
-async def source(context):
+async def about(context):
     '''get a link to my GitHub repo'''
-    await bot.send_message(context.message.channel, 'https://github.com/CoolDude311/BossBot')
+    embed = discord.Embed(title="About this bot", description="This bot was a final project of sorts for my Python course. I've been adding to it since then.\nI'm still a fairly inexperienced developer, so apologies for any bugs you experience. Feel free to contact me with any problems you're having, or create an issue on the GitHub repo. No promises as to when I'll be able to look into it though.\nThank you for using my bot!", colour=discord.Colour.dark_purple())
+    embed.add_field(name="Discord", value="Xena#6395", inline=False)
+    embed.add_field(name="Twitter", value="https://twitter.com/Pbod64", inline=False)
+    embed.add_field(name="tumblr", value="https://xenusprophet.tumblr.com", inline=False)
+    embed.add_field(name="GitHub Repository", value="https://github.com/CoolDude311/BossBot", inline=False)
+    await bot.send_message(context.message.channel, embed=embed)
 
 @bot.command(pass_context=True)
 async def invite(context):
